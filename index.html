@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Assegnazione Giri e Corrieri</title>
+  <link rel="stylesheet" href="Giri.css">
+</head>
+<body>
+
+  <div class="container">
+    
+    <!-- INTESTAZIONE -->
+    <header class="app-header">
+      <h1>Assegnazione Giri e Corrieri</h1>
+      <p>Pianifica e ottimizza la copertura delle zone in base alle competenze e alle presenze del giorno.</p>
+    </header>
+
+    <!-- 1. PRESENZE E SUPPORTO (IN ALTO) -->
+    <section class="section">
+      <div class="section-header">
+        <div>
+          <h2>1. Presenze e Zone di Supporto</h2>
+          <p>Seleziona i corrieri disponibili oggi ed eventualmente attiva i gruppi per le zone di supporto.</p>
+        </div>
+        <button id="calculateBtn" class="btn btn-success" type="button">🚀 Calcola Assegnazione</button>
+      </div>
+
+      <div id="presenceContainer"></div>
+    </section>
+
+    <!-- 2. RISULTATI (SEZIONE DINAMICA) -->
+    <section id="resultsSection" class="section" style="display: none;">
+      <div class="section-header">
+        <div>
+          <h2>2. Risultati Assegnazione</h2>
+          <p>Esamina l'assegnazione ottimale generata dal sistema. Puoi bloccare i corrieri desiderati e ricalcolare.</p>
+        </div>
+      </div>
+
+      <div id="resultContainer"></div>
+    </section>
+
+    <!-- 3. MATRICE DELLE COMPETENZE (IN BASSO) -->
+    <section class="section">
+      <div class="section-header">
+        <div>
+          <h2>3. Matrice delle Competenze</h2>
+          <p>Gestisci l'affinità dei corrieri rispetto ai vari giri (valori da 0 a 5).</p>
+        </div>
+        <button id="addRouteBtn" class="btn btn-secondary" type="button">+ Aggiungi Giro</button>
+      </div>
+
+      <!-- Tabella Matrice generata da Giri.js -->
+      <div id="matrixContainer"></div>
+
+      <!-- Inserimento Rapido Corrieri (Righe) -->
+      <div class="add-row" style="margin-top: 16px;">
+        <input id="newCourierInput" type="text" maxlength="80" placeholder="Nome del nuovo corriere">
+        <button id="addCourierBtn" class="btn btn-primary" type="button">+ Aggiungi Corriere</button>
+      </div>
+    </section>
+
+    <!-- AZIONI GLOBALI -->
+    <footer class="app-footer">
+      <button id="resetBtn" class="btn btn-danger" type="button">⚠️ Azzera Tutti i Dati</button>
+    </footer>
+
+  </div>
+
+  <!-- TOAST DI NOTIFICA -->
+  <div id="toast" class="toast"></div>
+  <script src="Database.js"></script>
+  <script src="Giri.js"></script>
+</body>
+</html>
