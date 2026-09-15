@@ -1,5 +1,6 @@
 const STORAGE_KEY = "gestione_giri_corrieri_v1";
-
+const exportBtn = document.getElementById("exportBtn");
+if (exportBtn) exportBtn.addEventListener("click", esportaJSON);
 let state = loadState();
 let lastResult = null;
 let pinnedAssignments = {};
@@ -26,13 +27,19 @@ function createId(prefix) {
 }
 
 function emptyState() {
-    return { corrieri: [], giri: [], competenze: {}, supportiGruppi: {} };
+    return { 
+        corrieri: [], 
+        giri: [], 
+        competenze: {}, 
+        supportiGruppi: {}, 
+        numeroGruppiSupporto: 2,
+        numeroSponde: 2 
+    };
 }
 
 function loadState() {
     try {
         const raw = localStorage.getItem(STORAGE_KEY);
-        // Se c'è un salvataggio nel browser usa quello, altrimenti carica il DB predefinito da data.js
         if (!raw) {
             return typeof DB_INIZIALE !== "undefined" ? JSON.parse(JSON.stringify(DB_INIZIALE)) : emptyState();
         }
@@ -42,6 +49,8 @@ function loadState() {
         }
         parsed.corrieri.forEach(c => { if (typeof c.presente !== "boolean") c.presente = true; });
         if (!parsed.supportiGruppi) parsed.supportiGruppi = {};
+        if (!parsed.numeroGruppiSupporto) parsed.numeroGruppiSupporto = 2;
+        if (!parsed.numeroSponde) parsed.numeroSponde = 2;
         return parsed;
     } catch (error) {
         console.error("Errore caricamento dati:", error);
@@ -111,7 +120,6 @@ function renderMatrix() {
             <th class="route-head corner">Corrieri / Giri</th>
   `;
 
-    // INTESTAZIONE COLONNE (GIRI) TRASCINABILI
     state.giri.forEach(route => {
         html += `
       <th draggable="true" data-drag-type="route" data-id="${route.id}">
@@ -132,7 +140,6 @@ function renderMatrix() {
         <tbody>
   `;
 
-    // RIGHE (CORRIERI) TRASCINABILI
     state.corrieri.forEach(courier => {
         html += `
       <tr draggable="true" data-drag-type="courier" data-id="${courier.id}">
@@ -147,7 +154,9 @@ function renderMatrix() {
 
         state.giri.forEach(route => {
             const score = getScore(route.id, courier.id);
-            const bgStyle = score > 0 ? `style="background: ${scoreBackground(score)}"` : "";
+            // MODIFICA: Ora controlla "score >= 0" e "score !== null" così colora di rosso anche lo 0 fin dal primo caricamento
+            const bgStyle = (score !== null && score !== undefined && score >= 0) ? `style="background: ${scoreBackground(score)}"` : "";
+
             html += `
         <td ${bgStyle}>
           <input type="number" 
@@ -173,7 +182,6 @@ function renderMatrix() {
 
     container.innerHTML = html;
 }
-
 function renderPresence() {
     if (state.corrieri.length === 0 && state.giri.length === 0) {
         els.presenceContainer.innerHTML = `
@@ -185,8 +193,10 @@ function renderPresence() {
     }
 
     if (!state.supportiGruppi) state.supportiGruppi = {};
+    const maxGroups = state.numeroGruppiSupporto || 2;
+    const numSponde = state.numeroSponde || 2;
 
-    const supportRoutes = state.giri.filter(r => r.nome.toLowerCase().includes("supporto"));
+    const supportRoutes = state.giri.filter(r => /\b(s|supporto)\b/i.test(r.nome));
 
     let html = `<div style="display: flex; flex-direction: column; gap: 16px;">`;
 
@@ -205,17 +215,33 @@ function renderPresence() {
         </div>`;
     }
 
+    html += `
+    <div style="display: flex; gap: 24px; align-items: center; flex-wrap: wrap; background: #f8fafc; padding: 12px; border-radius: 6px; border: 1px solid var(--border);">
+      <div style="display: flex; align-items: center; gap: 8px;">
+        <label for="groupCountSelect" style="font-size: 0.85rem; font-weight: bold; color: var(--muted);">Numero Supporti:</label>
+        <select id="groupCountSelect" data-action="change-group-count" style="padding: 4px 8px; border-radius: 4px; border: 1px solid var(--border);">
+          ${[1, 2, 3, 4, 5].map(n => `<option value="${n}" ${n === maxGroups ? "selected" : ""}>${n}</option>`).join("")}
+        </select>
+      </div>
+
+      <div style="display: flex; align-items: center; gap: 8px;">
+        <label for="spondeCountSelect" style="font-size: 0.85rem; font-weight: bold; color: var(--muted);">Numero Sponde:</label>
+        <select id="spondeCountSelect" data-action="change-sponde-count" style="padding: 4px 8px; border-radius: 4px; border: 1px solid var(--border);">
+          ${[1, 2, 3].map(n => `<option value="${n}" ${n === numSponde ? "selected" : ""}>${n}</option>`).join("")}
+        </select>
+      </div>
+    </div>`;
+
     if (supportRoutes.length > 0) {
         html += `
         <div>
-          <strong style="display:block; margin-bottom: 8px; font-size: 0.85rem; color: var(--muted);">ATTIVAZIONE E ASSEGNAZIONE ZONE DI SUPPORTO</strong>
+          <strong style="display: block; font-size: 0.85rem; color: var(--muted); margin-bottom: 8px;">ATTIVAZIONE E ASSEGNAZIONE ZONE DI SUPPORTO</strong>
           <div class="result-table-wrap">
             <table class="result-table" style="background: #fff; border: 1px solid var(--border); border-radius: 6px;">
               <thead>
                 <tr>
                   <th>Zona di Supporto</th>
-                  <th style="text-align:center; width: 110px;">Gruppo 1</th>
-                  <th style="text-align:center; width: 110px;">Gruppo 2</th>
+                  ${Array.from({ length: maxGroups }, (_, i) => `<th style="text-align:center; min-width: 90px;">Gruppo ${i + 1}</th>`).join("")}
                 </tr>
               </thead>
               <tbody>
@@ -224,12 +250,13 @@ function renderPresence() {
             return `
                     <tr>
                       <td><strong>${escapeHtml(zone.nome)}</strong></td>
-                      <td style="text-align:center;">
-                        <input type="checkbox" data-action="assign-group" data-zone="${zone.id}" data-group="1" ${group === 1 ? "checked" : ""}>
-                      </td>
-                      <td style="text-align:center;">
-                        <input type="checkbox" data-action="assign-group" data-zone="${zone.id}" data-group="2" ${group === 2 ? "checked" : ""}>
-                      </td>
+                      ${Array.from({ length: maxGroups }, (_, i) => {
+                          const groupNum = i + 1;
+                          return `
+                          <td style="text-align:center;">
+                            <input type="checkbox" data-action="assign-group" data-zone="${zone.id}" data-group="${groupNum}" ${group === groupNum ? "checked" : ""}>
+                          </td>`;
+                      }).join("")}
                     </tr>`;
         }).join("")}
               </tbody>
@@ -260,7 +287,7 @@ function renderResults(result) {
       <table class="result-table" style="background: #fff; border: 1px solid var(--border); border-radius: 8px; width: 100%;">
         <thead>
           <tr>
-            <th style="min-width: 180px;">Giro / Supporto</th>
+            <th style="min-width: 180px;">Giro / Supporto / Sponda</th>
             <th style="text-align: center; border-left: 1px solid var(--border);">
               <div style="display: flex; justify-content: space-between; align-items: center; padding: 0 8px;">
                 <span>Assegnazione Corriere</span>
@@ -275,7 +302,7 @@ function renderResults(result) {
     activeRoutes.forEach(route => {
         const assignment = assignments.find(a => a.routeId === route.id);
         const selectedCourierId = assignment ? assignment.courierId : "";
-        const isPinned = Boolean(pinnedAssignments[route.id]);
+        const isPinned = pinnedAssignments.hasOwnProperty(route.id);
         const currentScore = assignment ? assignment.score : 0;
 
         html += `<tr>
@@ -286,11 +313,11 @@ function renderResults(result) {
                 <option value="">-- Non Assegnato --</option>
                 ${availableCouriers.map(c => `<option value="${c.id}" ${c.id === selectedCourierId ? "selected" : ""}>${escapeHtml(c.nome)}</option>`).join("")}
               </select>
-              ${assignment ? `<span class="score-badge" style="background:${scoreBackground(currentScore)}; min-width: 32px; text-align: center; padding: 2px 6px; border-radius: 4px; font-weight: bold;">${Number.isInteger(currentScore) ? currentScore : currentScore.toFixed(1)}</span>` : ''}
+              ${selectedCourierId && assignment ? `<span class="score-badge" style="background:${scoreBackground(currentScore)}; min-width: 32px; text-align: center; padding: 2px 6px; border-radius: 4px; font-weight: bold;">${Number.isInteger(currentScore) ? currentScore : currentScore.toFixed(1)}</span>` : ''}
             </div>
           </td>
           <td style="text-align: center; border-left: 1px solid var(--border);">
-            <input type="checkbox" class="pin-checkbox" data-route="${route.id}" ${isPinned ? "checked" : ""} title="Blocca questo corriere su questo giro per i prossimi ricalcoli">
+            <input type="checkbox" class="pin-checkbox" data-route="${route.id}" ${isPinned ? "checked" : ""} title="Blocca questo stato su questo giro per i prossimi ricalcoli">
           </td>
         </tr>`;
     });
@@ -441,30 +468,53 @@ function updatePresence(id, checked) {
 // LOGICA DI CALCOLO UNGHERESE (HUNGARIAN ALGORITHM)
 function calculateAssignments() {
     const availableCouriers = state.corrieri.filter(c => c.presente);
-    const normalRoutes = state.giri.filter(r => !r.nome.toLowerCase().includes("supporto"));
-    const supportZoneRoutes = state.giri.filter(r => r.nome.toLowerCase().includes("supporto"));
+    
+    // Individua l'eventuale giro "sponda" nella matrice delle competenze
+    const spondaTemplateRoute = state.giri.find(r => /^sponda$/i.test(r.nome.trim()));
 
-    const group1Zones = supportZoneRoutes.filter(r => state.supportiGruppi?.[r.id] === 1);
-    const group2Zones = supportZoneRoutes.filter(r => state.supportiGruppi?.[r.id] === 2);
+    // Filtra i giri escludendo supporti e il giro master "sponda"
+    const normalRoutes = state.giri.filter(r => 
+        !/\b(s|supporto)\b/i.test(r.nome) && 
+        !(spondaTemplateRoute && r.id === spondaTemplateRoute.id)
+    );
+    const supportZoneRoutes = state.giri.filter(r => /\b(s|supporto)\b/i.test(r.nome));
 
     const activeRoutes = normalRoutes.map(r => ({ id: r.id, nome: r.nome, type: "normal" }));
 
-    if (group1Zones.length > 0) {
-        const zoneNames = group1Zones.map(z => z.nome.replace(/supporto\s*/i, "")).join(", ");
-        activeRoutes.push({ id: "SUPPORTO_GROUP_1", nome: `Supporto Gruppo 1 (${zoneNames})`, type: "support_group", zones: group1Zones });
+    // Aggiunta Gruppi di Supporto
+    const maxGroups = state.numeroGruppiSupporto || 2;
+    for (let g = 1; g <= maxGroups; g++) {
+        const groupZones = supportZoneRoutes.filter(r => state.supportiGruppi?.[r.id] === g);
+        if (groupZones.length > 0) {
+            const zoneNames = groupZones.map(z => z.nome.replace(/\b(s|supporto)\b\s*/i, "")).join(", ");
+            activeRoutes.push({ 
+                id: `SUPPORTO_GROUP_${g}`, 
+                nome: `Supporto Gruppo ${g} (${zoneNames})`, 
+                type: "support_group", 
+                zones: groupZones 
+            });
+        }
     }
 
-    if (group2Zones.length > 0) {
-        const zoneNames = group2Zones.map(z => z.nome.replace(/supporto\s*/i, "")).join(", ");
-        activeRoutes.push({ id: "SUPPORTO_GROUP_2", nome: `Supporto Gruppo 2 (${zoneNames})`, type: "support_group", zones: group2Zones });
+    // Aggiunta Sponde dinamiche selezionate (da 1 a 3)
+    const numSponde = state.numeroSponde || 2;
+    for (let s = 1; s <= numSponde; s++) {
+        activeRoutes.push({
+            id: `SPONDA_${s}`,
+            nome: `Sponda ${s}`,
+            type: "sponda"
+        });
     }
 
     if (activeRoutes.length === 0) {
-        showToast("Nessun giro o gruppo di supporto attivo.");
+        showToast("Nessun giro, supporto o sponda attivo.");
         return;
     }
 
     function getEffectiveScore(routeObj, courierId) {
+        if (routeObj.type === "sponda") {
+            return spondaTemplateRoute ? getScore(spondaTemplateRoute.id, courierId) : 0;
+        }
         if (routeObj.type === "normal") return getScore(routeObj.id, courierId);
         if (!routeObj.zones || routeObj.zones.length === 0) return 0;
         let sum = 0;
@@ -532,12 +582,21 @@ function calculateAssignments() {
     const routesToCalculate = [];
 
     activeRoutes.forEach(route => {
+        const isPinned = pinnedAssignments.hasOwnProperty(route.id);
         const pinnedCourierId = pinnedAssignments[route.id];
-        const courier = availableCouriers.find(c => c.id === pinnedCourierId);
 
-        if (pinnedCourierId && courier) {
-            finalAssignments.push({ routeId: route.id, routeName: route.nome, courierId: courier.id, courierName: courier.nome, score: getEffectiveScore(route, courier.id), isPinned: true });
-            assignedCourierIds.add(courier.id);
+        if (isPinned) {
+            if (pinnedCourierId) {
+                const courier = availableCouriers.find(c => c.id === pinnedCourierId);
+                if (courier) {
+                    finalAssignments.push({ routeId: route.id, routeName: route.nome, courierId: courier.id, courierName: courier.nome, score: getEffectiveScore(route, courier.id), isPinned: true });
+                    assignedCourierIds.add(courier.id);
+                } else {
+                    finalAssignments.push({ routeId: route.id, routeName: route.nome, courierId: "", courierName: "", score: 0, isPinned: true });
+                }
+            } else {
+                finalAssignments.push({ routeId: route.id, routeName: route.nome, courierId: "", courierName: "", score: 0, isPinned: true });
+            }
         } else {
             routesToCalculate.push(route);
         }
@@ -585,6 +644,27 @@ function resetData() {
     showToast("Dati azzerati.");
 }
 
+function esportaJSON() {
+    if (!state) {
+        showToast("Nessun dato da esportare.");
+        return;
+    }
+
+    const jsonString = JSON.stringify(state, null, 2);
+    const blob = new Blob([jsonString], { type: "application/json" });
+    const url = URL.createObjectURL(blob);
+
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = "data.json";
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+
+    URL.revokeObjectURL(url);
+    showToast("File JSON esportato con successo!");
+}
+
 let toastTimer = null;
 function showToast(message) {
     els.toast.textContent = message;
@@ -598,7 +678,6 @@ els.matrixContainer.addEventListener("dragstart", event => {
     const target = event.target.closest("[draggable='true']");
     if (!target) return;
 
-    // Impedisci il drag se l'utente sta cliccando dentro un input di testo
     if (event.target.tagName === "INPUT") {
         event.preventDefault();
         return;
@@ -686,6 +765,27 @@ els.presenceContainer.addEventListener("change", event => {
         saveState();
         lastResult = null;
         renderPresence();
+    } else if (target.dataset.action === "change-group-count") {
+        const newCount = Number(target.value);
+        state.numeroGruppiSupporto = newCount;
+        
+        if (state.supportiGruppi) {
+            Object.keys(state.supportiGruppi).forEach(zoneId => {
+                if (state.supportiGruppi[zoneId] > newCount) {
+                    delete state.supportiGruppi[zoneId];
+                }
+            });
+        }
+        
+        saveState();
+        lastResult = null;
+        renderPresence();
+    } else if (target.dataset.action === "change-sponde-count") {
+        const newSponde = Number(target.value);
+        state.numeroSponde = newSponde;
+        saveState();
+        lastResult = null;
+        renderPresence();
     }
 });
 
@@ -694,9 +794,8 @@ els.resultContainer.addEventListener("change", event => {
     if (target.classList.contains("courier-select")) {
         const routeId = target.dataset.route;
         const courierId = target.value;
-        if (pinnedAssignments[routeId]) {
-            if (courierId) pinnedAssignments[routeId] = courierId;
-            else delete pinnedAssignments[routeId];
+        if (pinnedAssignments.hasOwnProperty(routeId)) {
+            pinnedAssignments[routeId] = courierId;
         }
     }
 
@@ -704,13 +803,8 @@ els.resultContainer.addEventListener("change", event => {
         const routeId = target.dataset.route;
         const select = els.resultContainer.querySelector(`select[data-route="${routeId}"]`);
         if (target.checked) {
-            if (select && select.value) {
-                pinnedAssignments[routeId] = select.value;
-                showToast("Giro bloccato sul corriere selezionato.");
-            } else {
-                target.checked = false;
-                showToast("Seleziona prima un corriere per poterlo bloccare.");
-            }
+            pinnedAssignments[routeId] = select ? select.value : "";
+            showToast(select && select.value ? "Giro bloccato sul corriere selezionato." : "Giro bloccato su 'Non Assegnato'.");
         } else {
             delete pinnedAssignments[routeId];
             showToast("Sbloccato.");
