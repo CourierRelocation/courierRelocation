@@ -109,6 +109,11 @@ const DB_INIZIALE = {
             "id": "c_mu1k28th_acmbxjh",
             "nome": "Simone",
             "presente": true
+        },
+        {
+            "id": "c_mu33vrvr_icmh83r",
+            "nome": "Paul",
+            "presente": true
         }
     ],
     "giri": [
@@ -212,7 +217,8 @@ const DB_INIZIALE = {
             "c_mu1mgpcr_f6yjdts": 0,
             "c_mu1mgybe_7d97dpq": 0,
             "c_mu1mh0vo_x5ek4i9": 0,
-            "c_mu1mm5gx_0x07gbj": 0
+            "c_mu1mm5gx_0x07gbj": 0,
+            "c_mu33vrvr_icmh83r": 0
         },
         "r_mu1jy5h5_s9u2ytx": {
             "c_mu1jxmlw_w7is982": 0,
@@ -236,7 +242,8 @@ const DB_INIZIALE = {
             "c_mu1mgpcr_f6yjdts": 0,
             "c_mu1mgybe_7d97dpq": 4,
             "c_mu1mh0vo_x5ek4i9": 0,
-            "c_mu1mm5gx_0x07gbj": 0
+            "c_mu1mm5gx_0x07gbj": 0,
+            "c_mu33vrvr_icmh83r": 0
         },
         "r_mu1jycym_luxlosd": {
             "c_mu1jxmlw_w7is982": 4,
@@ -260,7 +267,8 @@ const DB_INIZIALE = {
             "c_mu1mgpcr_f6yjdts": 0,
             "c_mu1mgybe_7d97dpq": 0,
             "c_mu1mh0vo_x5ek4i9": 0,
-            "c_mu1mm5gx_0x07gbj": 0
+            "c_mu1mm5gx_0x07gbj": 0,
+            "c_mu33vrvr_icmh83r": 0
         },
         "r_mu1jyhhe_o724dif": {
             "c_mu1jxmlw_w7is982": 0,
@@ -284,7 +292,8 @@ const DB_INIZIALE = {
             "c_mu1mgpcr_f6yjdts": 0,
             "c_mu1mgybe_7d97dpq": 0,
             "c_mu1mh0vo_x5ek4i9": 0,
-            "c_mu1mm5gx_0x07gbj": 0
+            "c_mu1mm5gx_0x07gbj": 0,
+            "c_mu33vrvr_icmh83r": 4
         },
         "r_mu1jyuyu_3kf569p": {
             "c_mu1jxmlw_w7is982": 0,
@@ -308,7 +317,8 @@ const DB_INIZIALE = {
             "c_mu1mgpcr_f6yjdts": 0,
             "c_mu1mgybe_7d97dpq": 0,
             "c_mu1mh0vo_x5ek4i9": 0,
-            "c_mu1mm5gx_0x07gbj": 0
+            "c_mu1mm5gx_0x07gbj": 0,
+            "c_mu33vrvr_icmh83r": 0
         },
         "r_mu1jyzfn_k3rclfe": {
             "c_mu1jxmlw_w7is982": 0,
@@ -332,7 +342,8 @@ const DB_INIZIALE = {
             "c_mu1mgpcr_f6yjdts": 0,
             "c_mu1mgybe_7d97dpq": 4,
             "c_mu1mh0vo_x5ek4i9": 0,
-            "c_mu1mm5gx_0x07gbj": 0
+            "c_mu1mm5gx_0x07gbj": 0,
+            "c_mu33vrvr_icmh83r": 0
         },
         "r_mu1jz4an_6qck0yz": {
             "c_mu1jxmlw_w7is982": 0,
@@ -356,7 +367,8 @@ const DB_INIZIALE = {
             "c_mu1mgpcr_f6yjdts": 4,
             "c_mu1mgybe_7d97dpq": 0,
             "c_mu1mh0vo_x5ek4i9": 0,
-            "c_mu1mm5gx_0x07gbj": 0
+            "c_mu1mm5gx_0x07gbj": 0,
+            "c_mu33vrvr_icmh83r": 0
         },
         "r_mu1jzcx5_ukpfpue": {
             "c_mu1jxmlw_w7is982": 0,
@@ -380,7 +392,8 @@ const DB_INIZIALE = {
             "c_mu1mgpcr_f6yjdts": 0,
             "c_mu1mgybe_7d97dpq": 0,
             "c_mu1mh0vo_x5ek4i9": 0,
-            "c_mu1mm5gx_0x07gbj": 0
+            "c_mu1mm5gx_0x07gbj": 0,
+            "c_mu33vrvr_icmh83r": 0
         },
         "r_mu1jzgxi_kbn7x7a": {
             "c_mu1jxmlw_w7is982": 0,
@@ -404,7 +417,8 @@ const DB_INIZIALE = {
             "c_mu1mgpcr_f6yjdts": 0,
             "c_mu1mgybe_7d97dpq": 0,
             "c_mu1mh0vo_x5ek4i9": 4,
-            "c_mu1mm5gx_0x07gbj": 0
+            "c_mu1mm5gx_0x07gbj": 0,
+            "c_mu33vrvr_icmh83r": 0
         },
         "r_mu1jzpgh_nyxry5z": {
             "c_mu1jxmlw_w7is982": 4,
@@ -428,7 +442,8 @@ const DB_INIZIALE = {
             "c_mu1mgpcr_f6yjdts": 0,
             "c_mu1mgybe_7d97dpq": 0,
             "c_mu1mh0vo_x5ek4i9": 0,
-            "c_mu1mm5gx_0x07gbj": 0
+            "c_mu1mm5gx_0x07gbj": 0,
+            "c_mu33vrvr_icmh83r": 0
         },
         "r_mu1jzstk_95vxdhw": {
             "c_mu1jxmlw_w7is982": 0,
@@ -452,7 +467,8 @@ const DB_INIZIALE = {
             "c_mu1mgpcr_f6yjdts": 0,
             "c_mu1mgybe_7d97dpq": 0,
             "c_mu1mh0vo_x5ek4i9": 0,
-            "c_mu1mm5gx_0x07gbj": 0
+            "c_mu1mm5gx_0x07gbj": 0,
+            "c_mu33vrvr_icmh83r": 0
         },
         "r_mu1jzvn6_9u03gyn": {
             "c_mu1jxmlw_w7is982": 0,
@@ -476,7 +492,8 @@ const DB_INIZIALE = {
             "c_mu1mgpcr_f6yjdts": 0,
             "c_mu1mgybe_7d97dpq": 0,
             "c_mu1mh0vo_x5ek4i9": 4,
-            "c_mu1mm5gx_0x07gbj": 0
+            "c_mu1mm5gx_0x07gbj": 0,
+            "c_mu33vrvr_icmh83r": 0
         },
         "r_mu1k03oo_ve816k0": {
             "c_mu1jxmlw_w7is982": 0,
@@ -500,7 +517,8 @@ const DB_INIZIALE = {
             "c_mu1mgpcr_f6yjdts": 0,
             "c_mu1mgybe_7d97dpq": 0,
             "c_mu1mh0vo_x5ek4i9": 0,
-            "c_mu1mm5gx_0x07gbj": 0
+            "c_mu1mm5gx_0x07gbj": 0,
+            "c_mu33vrvr_icmh83r": 0
         },
         "r_mu1k2owr_uwpi0lf": {
             "c_mu1jxmlw_w7is982": 2,
@@ -524,7 +542,8 @@ const DB_INIZIALE = {
             "c_mu1mgpcr_f6yjdts": 0,
             "c_mu1mgybe_7d97dpq": 0,
             "c_mu1mh0vo_x5ek4i9": 0,
-            "c_mu1mm5gx_0x07gbj": 0
+            "c_mu1mm5gx_0x07gbj": 0,
+            "c_mu33vrvr_icmh83r": 0
         },
         "r_mu1mga6m_mdwvt95": {
             "c_mu1jxmlw_w7is982": 3,
@@ -548,7 +567,8 @@ const DB_INIZIALE = {
             "c_mu1mgpcr_f6yjdts": 5,
             "c_mu1mgybe_7d97dpq": 5,
             "c_mu1mh0vo_x5ek4i9": 0,
-            "c_mu1mm5gx_0x07gbj": 5
+            "c_mu1mm5gx_0x07gbj": 5,
+            "c_mu33vrvr_icmh83r": 0
         },
         "r_mu1mx7gg_633z9py": {
             "c_mu1jxmlw_w7is982": 4,
@@ -572,7 +592,8 @@ const DB_INIZIALE = {
             "c_mu1mgpcr_f6yjdts": 0,
             "c_mu1mgybe_7d97dpq": 4,
             "c_mu1mh0vo_x5ek4i9": 5,
-            "c_mu1mm5gx_0x07gbj": 0
+            "c_mu1mm5gx_0x07gbj": 0,
+            "c_mu33vrvr_icmh83r": 1
         },
         "r_mu1mxbzj_pkzlsnh": {
             "c_mu1jxmlw_w7is982": 2,
@@ -596,7 +617,8 @@ const DB_INIZIALE = {
             "c_mu1mgpcr_f6yjdts": 0,
             "c_mu1mgybe_7d97dpq": 0,
             "c_mu1mh0vo_x5ek4i9": 3,
-            "c_mu1mm5gx_0x07gbj": 0
+            "c_mu1mm5gx_0x07gbj": 0,
+            "c_mu33vrvr_icmh83r": 1
         },
         "r_mu1mxgk9_gpgovgo": {
             "c_mu1jxmlw_w7is982": 5,
@@ -620,7 +642,8 @@ const DB_INIZIALE = {
             "c_mu1mgpcr_f6yjdts": 0,
             "c_mu1mgybe_7d97dpq": 0,
             "c_mu1mh0vo_x5ek4i9": 5,
-            "c_mu1mm5gx_0x07gbj": 0
+            "c_mu1mm5gx_0x07gbj": 0,
+            "c_mu33vrvr_icmh83r": 1
         },
         "r_mu1mxn8e_0utnqt9": {
             "c_mu1jxmlw_w7is982": 4,
@@ -644,15 +667,17 @@ const DB_INIZIALE = {
             "c_mu1mgpcr_f6yjdts": 0,
             "c_mu1mgybe_7d97dpq": 0,
             "c_mu1mh0vo_x5ek4i9": 3,
-            "c_mu1mm5gx_0x07gbj": 0
+            "c_mu1mm5gx_0x07gbj": 0,
+            "c_mu33vrvr_icmh83r": 1
         }
     },
     "supportiGruppi": {
         "r_mu1mxbzj_pkzlsnh": 1,
         "r_mu1mxgk9_gpgovgo": 2,
-        "r_mu1mxn8e_0utnqt9": 1,
-        "r_mu1mx7gg_633z9py": 2
+        "r_mu1mxn8e_0utnqt9": 2
     },
     "numeroGruppiSupporto": 2,
     "numeroSponde": 2
-};
+}
+
+    ;

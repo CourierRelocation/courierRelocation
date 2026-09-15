@@ -277,8 +277,13 @@ function renderResults(result) {
         return;
     }
 
-    const { activeRoutes, assignments, totalScore, unassignedCouriers } = result;
+    // Estrai anche maxScore
+    const { activeRoutes, assignments, totalScore, maxScore, unassignedCouriers } = result;
     const availableCouriers = state.corrieri.filter(c => c.presente);
+
+    // Formattazione pulita dei decimali (es. "87.5 / 95" invece di "87.50000 / 95")
+    const formattedTotal = Number.isInteger(totalScore) ? totalScore : totalScore.toFixed(1);
+    const formattedMax = Number.isInteger(maxScore) ? maxScore : maxScore.toFixed(1);
 
     let html = `<div style="display: flex; flex-direction: column; gap: 16px;">`;
 
@@ -291,7 +296,10 @@ function renderResults(result) {
             <th style="text-align: center; border-left: 1px solid var(--border);">
               <div style="display: flex; justify-content: space-between; align-items: center; padding: 0 8px;">
                 <span>Assegnazione Corriere</span>
-                <span style="font-size: 0.85rem; color: var(--muted); font-weight: normal;">Punteggio Totale: <strong>${totalScore.toFixed(1)}</strong></span>
+                <!-- MODIFICATO QUI: Mostra il punteggio ottenuto rispetto al massimo teorico -->
+                <span style="font-size: 0.85rem; color: var(--muted); font-weight: normal;">
+                  Punteggio Totale: <strong>${formattedTotal} / ${formattedMax}</strong>
+                </span>
               </div>
             </th>
             <th style="width: 90px; text-align: center; border-left: 1px solid var(--border);">Blocca</th>
@@ -625,9 +633,14 @@ function calculateAssignments() {
     }
 
     const totalScore = finalAssignments.reduce((sum, a) => sum + a.score, 0);
+
+    // CALCOLO PUNTEGGIO MASSIMO TEORICO (5 punti max per ogni giro attivo)
+    const maxScore = activeRoutes.length * 5;
+
     const unassignedCouriers = availableCouriers.filter(c => !assignedCourierIds.has(c.id));
 
-    lastResult = { activeRoutes, assignments: finalAssignments, totalScore, unassignedCouriers };
+    // Salva sia totalScore che maxScore in lastResult
+    lastResult = { activeRoutes, assignments: finalAssignments, totalScore, maxScore, unassignedCouriers };
     renderResults(lastResult);
     els.resultsSection.scrollIntoView({ behavior: "smooth", block: "start" });
 }
